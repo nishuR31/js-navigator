@@ -10,12 +10,9 @@
 <script src="https://cdn.tailwindcss.com"></script>
 
   <!-- Sonner Toast -->
-<script src="https://cdn.jsdelivr.net/npm/sonner@1.5.0/dist/sonner.umd.min.js"></script>
-<script>
-  // Sonner is available as window.Sonner
-  const Toaster = Sonner.Toaster;
-  const toast = Sonner.toast;
-  window.toast = toast; // expose globally
+<script type="module">
+  import { Toaster, toast } from "https://esm.sh/sonner@1.5.0";
+  window.toast = toast;
 
   document.addEventListener("DOMContentLoaded", () => {
     new Toaster({ target: document.body });

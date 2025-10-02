@@ -1,251 +1,4 @@
-<!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Navigator API Playground</title>
 
-  Tailwind CSS
-<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-<script src="https://cdn.tailwindcss.com"></script>
-
-  Toast
-  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
-
-  Toastify JS
-  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
-
-
-
-  Lucide Icons
-  <script src="https://unpkg.com/lucide@latest"></script>
-</head>
-<body class="bg-gray-900 text-gray-100 min-h-screen flex flex-col items-center p-6">
-
-  <h1 class="text-4xl font-bold mb-6 animate-bounce">Navigator API Playground</h1>
-
-  <div id="cards" class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 w-full max-w-7xl"></div>
-
-  <video id="cameraFeed" autoplay playsinline class="hidden mt-6 rounded shadow-lg border"></video>
-
-  <script>
-      <script>
-    function showToast(message, ) {
-     
-    }
-
-    document.getElementById("toastBtn").onclick = () => {
-      showToast("Toastify JS is working!");
-    };
-  
-    function showInfo(title, data,bgColor = "linear-gradient(to right, #00b09b, #96c93d)") {
-      const formatted = typeof data === "object" ? JSON.stringify(data, null, 2) : data;
-      toast.info(`${title}: ${formatted}`);
-       Toastify({
-        text: message,
-        duration: 3000,
-        close: true,
-        gravity: "top",
-        position: "right",
-        backgroundColor: bgColor
-      }).showToast();
-    }
-
-    const demos = [
-      {
-        title: "Online / Offline",
-        icon: "wifi",
-        run: () => {
-          const status = navigator.onLine ? "Online" : "Offline";
-          showInfo("Network Status", status);
-        }
-      },
-      {
-        title: "Geolocation",
-        icon: "map-pin",
-        run: () => {
-          if ("geolocation" in navigator) {
-            navigator.geolocation.getCurrentPosition(
-              pos => {
-                const coords = pos.coords;
-                const msg = `Latitude: ${coords.latitude}, Longitude: ${coords.longitude}, Accuracy: ${coords.accuracy}m`;
-                toast.success(msg);
-                showInfo("Geolocation Data", coords);
-              },
-              err => toast.error(`Geolocation error (${err.code}): ${err.message}`),
-              { enableHighAccuracy: true, timeout: 10000, maximumAge: 5000 }
-            );
-          } else toast.error("Geolocation not supported");
-        }
-      },
-      {
-        title: "Notifications",
-        icon: "bell",
-        run: async () => {
-          if (!("Notification" in window)) return toast.error("Notifications not supported");
-          const permission = await Notification.requestPermission();
-          if (permission === "granted") {
-            new Notification("Navigator API", {
-              body: "This is a detailed Notification API example.",
-              icon: "https://img.icons8.com/color/48/000000/notification.png"
-            });
-            toast.success("Notification sent");
-            showInfo("Notification Permission", permission);
-          } else toast.error("Permission denied");
-        }
-      },
-      {
-        title: "Clipboard",
-        icon: "clipboard",
-        run: async () => {
-          try {
-            const text = "Navigator API Example Text";
-            await navigator.clipboard.writeText(text);
-            toast.success("Text copied to clipboard");
-            const clipText = await navigator.clipboard.readText();
-            showInfo("Clipboard Content", clipText);
-          } catch (err) {
-            toast.error("Clipboard API error: " + err.message);
-          }
-        }
-      },
-      {
-        title: "Share",
-        icon: "share",
-        run: async () => {
-          if (!navigator.share) return toast.error("Share API not supported");
-          try {
-            await navigator.share({
-              title: "Navigator API Playground",
-              text: "Check this amazing API playground",
-              url: window.location.href
-            });
-            toast.success("Shared successfully");
-            showInfo("Share API", "Content shared successfully");
-          } catch (err) {
-            toast.error("Share failed: " + err.message);
-          }
-        }
-      },
-      {
-        title: "Device Info",
-        icon: "monitor",
-        run: () => {
-          const info = {
-            "User Agent": navigator.userAgent,
-            Platform: navigator.platform,
-            Language: navigator.language,
-            Languages: navigator.languages,
-            CookiesEnabled: navigator.cookieEnabled,
-            DoNotTrack: navigator.doNotTrack
-          };
-          showInfo("Device Info", info);
-        }
-      },
-      {
-        title: "Battery",
-        icon: "battery",
-        run: async () => {
-          if (!("getBattery" in navigator)) return toast.error("Battery API not supported");
-          try {
-            const battery = await navigator.getBattery();
-            const msg = `Battery: ${(battery.level * 100).toFixed(0)}% | Charging: ${battery.charging}`;
-            toast.success(msg);
-            showInfo("Battery Info", battery);
-          } catch (err) {
-            toast.error("Battery API error: " + err.message);
-          }
-        }
-      },
-      {
-        title: "Camera / Mic",
-        icon: "camera",
-        run: async () => {
-          if (!navigator.mediaDevices?.getUserMedia) return toast.error("Media Devices API not supported");
-          try {
-            const stream = await navigator.mediaDevices.getUserMedia({
-              video: { width: 1280, height: 720 },
-              audio: false
-            });
-            const videoElement = document.getElementById("cameraFeed");
-            videoElement.srcObject = stream;
-            videoElement.classList.remove("hidden");
-            toast.success("Camera access granted");
-            showInfo("Media Stream", { video: stream.getVideoTracks()[0].label });
-          } catch (err) {
-            toast.error("Camera error: " + err.message);
-          }
-        }
-      },
-      {
-        title: "Vibration",
-        icon: "smartphone",
-        run: () => {
-          if (!navigator.vibrate) return toast.error("Vibration API not supported");
-          navigator.vibrate([300, 100, 300]);
-          toast.success("Vibration triggered");
-          showInfo("Vibration Pattern", "[300, 100, 300]");
-        }
-      },
-      {
-        title: "Memory / CPU",
-        icon: "cpu",
-        run: () => {
-          const info = {
-            Memory: navigator.deviceMemory || "Unknown",
-            Cores: navigator.hardwareConcurrency || "Unknown"
-          };
-          showInfo("System Info", info);
-        }
-      },
-      {
-        title: "Orientation",
-        icon: "compass",
-        run: () => {
-          if (!("DeviceOrientationEvent" in window)) return toast.error("Device Orientation API not supported");
-          toast.info("Listening to device orientation...");
-          const handler = e => {
-            showInfo("Orientation Data", {
-              Alpha: e.alpha?.toFixed(2),
-              Beta: e.beta?.toFixed(2),
-              Gamma: e.gamma?.toFixed(2)
-            });
-            window.removeEventListener("deviceorientation", handler);
-          };
-          window.addEventListener("deviceorientation", handler);
-        }
-      },
-      {
-        title: "Service Worker",
-        icon: "server",
-        run: () => {
-          if ("serviceWorker" in navigator) {
-            navigator.serviceWorker.register("/sw.js")
-              .then(reg => toast.success(`Service Worker registered: ${reg.scope}`))
-              .catch(err => toast.error("Service Worker error: " + err.message));
-            showInfo("Service Worker", "Attempted registration");
-          } else toast.error("Service Worker not supported");
-        }
-      }
-    ];
-
-    const container = document.getElementById("cards");
-    demos.forEach(demo => {
-      const card = document.createElement("div");
-      card.className = "bg-gray-800 p-5 rounded-xl shadow-lg flex flex-col items-center text-center transition hover:scale-105";
-      card.innerHTML = `
-        <i data-lucide="${demo.icon}" class="w-10 h-10 mb-3"></i>
-        <h2 class="font-bold text-lg mb-3">${demo.title}</h2>
-        <button class="px-6 py-2 bg-blue-600 hover:bg-blue-700 rounded font-medium">Try</button>
-      `;
-      card.querySelector("button").onclick = demo.run;
-      container.appendChild(card);
-    });
-
-    lucide.createIcons();
-  </script>
-</body>
-</html> -->
 
 <!DOCTYPE html>
 <html lang="en">
@@ -277,7 +30,7 @@
   <video id="cameraFeed" autoplay playsinline class="hidden mt-6 rounded shadow-lg border"></video>
 
   <script>
-    function showToast(message, bgColor = "linear-gradient(to right, #00b09b, #96c93d)") {
+    function showToast(message, bgColor = "linear-gradient(to right, #D3D3D3 , #708090 )") {
       Toastify({
         text: message,
         duration: 4000,
@@ -288,7 +41,7 @@
       }).showToast();
     }
 
-    function showInfo(title, data, bgColor = "linear-gradient(to right, #00b09b, #96c93d)") {
+    function showInfo(title, data, bgColor = "linear-gradient(to right, #D3D3D3, #708090)") {
       const formatted = typeof data === "object" ? JSON.stringify(data, null, 2) : data;
       showToast(`${title}: ${formatted}`, bgColor);
     }
@@ -312,17 +65,17 @@
                 const coords = pos.coords;
                 showInfo("Geolocation Data", coords);
               },
-              err => showToast("Geolocation error: " + err.message, "linear-gradient(to right, #ff5f6d, #ffc371)"),
+              err => showToast("Geolocation error: " + err.message, "linear-gradient(to right, #ff5f6d, #f90000 )"),
               { enableHighAccuracy: true, timeout: 10000, maximumAge: 5000 }
             );
-          } else showToast("Geolocation not supported", "linear-gradient(to right, #ff5f6d, #ffc371)");
+          } else showToast("Geolocation not supported", "linear-gradient(to right, #f99900, #f55500)");
         }
       },
       {
         title: "Notifications",
         icon: "bell",
         run: async () => {
-          if (!("Notification" in window)) return showToast("Notifications not supported", "linear-gradient(to right, #ff5f6d, #ffc371)");
+          if (!("Notification" in window)) return showToast("Notifications not supported", "linear-gradient(to right, #f99900, #f55500)");
           const permission = await Notification.requestPermission();
           if (permission === "granted") {
             new Notification("Navigator API", {
@@ -331,7 +84,7 @@
             });
             showToast("Notification sent");
             showInfo("Notification Permission", permission);
-          } else showToast("Permission denied", "linear-gradient(to right, #ff5f6d, #ffc371)");
+          } else showToast("Permission denied", "linear-gradient(to right, #ff5f6d, #f90000 )");
         }
       },
       {
@@ -345,7 +98,7 @@
             const clipText = await navigator.clipboard.readText();
             showInfo("Clipboard Content", clipText);
           } catch (err) {
-            showToast("Clipboard error: " + err.message, "linear-gradient(to right, #ff5f6d, #ffc371)");
+            showToast("Clipboard error: " + err.message, "linear-gradient(to right, #ff5f6d, #f90000 )");
           }
         }
       },
@@ -353,7 +106,7 @@
         title: "Share",
         icon: "share",
         run: async () => {
-          if (!navigator.share) return showToast("Share API not supported", "linear-gradient(to right, #ff5f6d, #ffc371)");
+          if (!navigator.share) return showToast("Share API not supported","linear-gradient(to right, #f99900, #f55500)");
           try {
             await navigator.share({
               title: "Navigator API Playground",
@@ -363,7 +116,7 @@
             showToast("Shared successfully");
             showInfo("Share API", "Content shared successfully");
           } catch (err) {
-            showToast("Share failed: " + err.message, "linear-gradient(to right, #ff5f6d, #ffc371)");
+            showToast("Share failed: " + err.message, "linear-gradient(to right, #ff5f6d, #f90000 )");
           }
         }
       },
@@ -386,14 +139,14 @@
         title: "Battery",
         icon: "battery",
         run: async () => {
-          if (!("getBattery" in navigator)) return showToast("Battery API not supported", "linear-gradient(to right, #ff5f6d, #ffc371)");
+          if (!("getBattery" in navigator)) return showToast("Battery API not supported", "linear-gradient(to right, #f99900, #f55500)");
           try {
             const battery = await navigator.getBattery();
             const msg = `Battery: ${(battery.level * 100).toFixed(0)}% | Charging: ${battery.charging}`;
             showToast(msg);
             showInfo("Battery Info", battery);
           } catch (err) {
-            showToast("Battery API error: " + err.message, "linear-gradient(to right, #ff5f6d, #ffc371)");
+            showToast("Battery API error: " + err.message, "linear-gradient(to right, #ff5f6d, #f90000 )");
           }
         }
       },
@@ -401,7 +154,7 @@
         title: "Camera / Mic",
         icon: "camera",
         run: async () => {
-          if (!navigator.mediaDevices?.getUserMedia) return showToast("Media Devices API not supported", "linear-gradient(to right, #ff5f6d, #ffc371)");
+          if (!navigator.mediaDevices?.getUserMedia) return showToast("Media Devices API not supported", "linear-gradient(to right, #f99900, #f55500)");
           try {
             const stream = await navigator.mediaDevices.getUserMedia({
               video: { width: 1280, height: 720 },
@@ -413,7 +166,7 @@
             showToast("Camera access granted");
             showInfo("Media Stream", { video: stream.getVideoTracks()[0].label });
           } catch (err) {
-            showToast("Camera error: " + err.message, "linear-gradient(to right, #ff5f6d, #ffc371)");
+            showToast("Camera error: " + err.message, "linear-gradient(to right, #ff5f6d, #f90000 )");
           }
         }
       },
@@ -421,7 +174,7 @@
         title: "Vibration",
         icon: "smartphone",
         run: () => {
-          if (!navigator.vibrate) return showToast("Vibration API not supported", "linear-gradient(to right, #ff5f6d, #ffc371)");
+          if (!navigator.vibrate) return showToast("Vibration API not supported", "linear-gradient(to right, #f99900, #f55500)");
           navigator.vibrate([300, 100, 300]);
           showToast("Vibration triggered");
           showInfo("Vibration Pattern", "[300, 100, 300]");
@@ -442,7 +195,7 @@
         title: "Orientation",
         icon: "compass",
         run: () => {
-          if (!("DeviceOrientationEvent" in window)) return showToast("Device Orientation API not supported", "linear-gradient(to right, #ff5f6d, #ffc371)");
+          if (!("DeviceOrientationEvent" in window)) return showToast("Device Orientation API not supported", "linear-gradient(to right, #f99900, #f55500)");
           showToast("Listening to device orientation...");
           const handler = e => {
             showInfo("Orientation Data", {
@@ -462,9 +215,9 @@
           if ("serviceWorker" in navigator) {
             navigator.serviceWorker.register("/sw.js")
               .then(reg => showToast(`Service Worker registered: ${reg.scope}`))
-              .catch(err => showToast("Service Worker error: " + err.message, "linear-gradient(to right, #ff5f6d, #ffc371)"));
+              .catch(err => showToast("Service Worker error: " + err.message, "linear-gradient(to right, #ff5f6d, #f90000 )"));
             showInfo("Service Worker", "Attempted registration");
-          } else showToast("Service Worker not supported", "linear-gradient(to right, #ff5f6d, #ffc371)");
+          } else showToast("Service Worker not supported", "linear-gradient(to right, #f99900, #f55500)");
         }
       }
     ];

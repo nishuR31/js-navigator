@@ -10,15 +10,18 @@
 <script src="https://cdn.tailwindcss.com"></script>
 
   <!-- Sonner Toast -->
-<script src="https://cdn.jsdelivr.net/npm/sonner@1.5.0/dist/sonner.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sonner@1.5.0/dist/sonner.umd.min.js"></script>
 <script>
-  const { Toaster, toast } = window.sonner;
-  window.toast = toast;
+  // Sonner is available as window.Sonner
+  const Toaster = Sonner.Toaster;
+  const toast = Sonner.toast;
+  window.toast = toast; // expose globally
 
   document.addEventListener("DOMContentLoaded", () => {
     new Toaster({ target: document.body });
   });
 </script>
+
 
 
   <!-- Lucide Icons -->

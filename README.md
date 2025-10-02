@@ -12,7 +12,7 @@ This repo demonstrates how to use **Geolocation, Clipboard, Online/Offline, Devi
 
 ---
 
-## 📋 Table of Contents
+##  Table of Contents
 
 1. [Online / Offline Detection](#-online--offline-detection)
 2. [Geolocation API](#-geolocation-api)
@@ -30,7 +30,7 @@ This repo demonstrates how to use **Geolocation, Clipboard, Online/Offline, Devi
 
 ---
 
-## 🌍 Online / Offline Detection
+## Online / Offline Detection
 
 Detect network status changes using `navigator.onLine`.
 
@@ -41,11 +41,11 @@ window.addEventListener("offline", () => console.log("Offline"));
 console.log("Current Status:", navigator.onLine ? "Online" : "Offline");
 ```
 
-📚 [MDN: Navigator.onLine](https://developer.mozilla.org/en-US/docs/Web/API/NavigatorOnLine/onLine)
+[MDN: Navigator.onLine](https://developer.mozilla.org/en-US/docs/Web/API/NavigatorOnLine/onLine)
 
 ---
 
-## 📍 Geolocation API
+## Geolocation API
 
 Get the user’s location (requires HTTPS + permission).
 
@@ -57,11 +57,11 @@ navigator.geolocation.getCurrentPosition(
 );
 ```
 
-📚 [MDN: Geolocation API](https://developer.mozilla.org/en-US/docs/Web/API/Geolocation_API)
+ [MDN: Geolocation API](https://developer.mozilla.org/en-US/docs/Web/API/Geolocation_API)
 
 ---
 
-## 🔔 Notifications API
+##  Notifications API
 
 Request permission and send browser notifications.
 
@@ -69,17 +69,17 @@ Request permission and send browser notifications.
 if ("Notification" in window) {
   Notification.requestPermission().then(permission => {
     if (permission === "granted") {
-      new Notification("Hello!", { body: "This is a test notification 🚀" });
+      new Notification("Hello!", { body: "This is a test notification " });
     }
   });
 }
 ```
 
-📚 [MDN: Notifications API](https://developer.mozilla.org/en-US/docs/Web/API/Notifications_API)
+ [MDN: Notifications API](https://developer.mozilla.org/en-US/docs/Web/API/Notifications_API)
 
 ---
 
-## 📋 Clipboard API
+##  Clipboard API
 
 Read/write text to clipboard.
 
@@ -95,11 +95,11 @@ navigator.clipboard.readText().then(text => {
 });
 ```
 
-📚 [MDN: Clipboard API](https://developer.mozilla.org/en-US/docs/Web/API/Clipboard_API)
+ [MDN: Clipboard API](https://developer.mozilla.org/en-US/docs/Web/API/Clipboard_API)
 
 ---
 
-## 📤 Share API
+## Share API
 
 Use native device sharing (mobile only).
 
@@ -115,11 +115,11 @@ if (navigator.share) {
 }
 ```
 
-📚 [MDN: Web Share API](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/share)
+ [MDN: Web Share API](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/share)
 
 ---
 
-## 💻 Device & OS Info
+##  Device & OS Info
 
 Check browser, platform, and user agent.
 
@@ -129,11 +129,11 @@ console.log("Platform:", navigator.platform);
 console.log("Language:", navigator.language);
 ```
 
-📚 [MDN: Navigator](https://developer.mozilla.org/en-US/docs/Web/API/Navigator)
+ [MDN: Navigator](https://developer.mozilla.org/en-US/docs/Web/API/Navigator)
 
 ---
 
-## 🔋 Battery API
+##  Battery API
 
 Battery level and charging status.
 
@@ -144,11 +144,11 @@ navigator.getBattery().then(battery => {
 });
 ```
 
-📚 [MDN: Battery Status API](https://developer.mozilla.org/en-US/docs/Web/API/Battery_Status_API)
+ [MDN: Battery Status API](https://developer.mozilla.org/en-US/docs/Web/API/Battery_Status_API)
 
 ---
 
-## 🎥 Media Devices
+##  Media Devices
 
 Access camera and microphone.
 
@@ -160,11 +160,11 @@ navigator.mediaDevices.getUserMedia({ video: true, audio: true })
   .catch(err => console.error("Error:", err));
 ```
 
-📚 [MDN: MediaDevices.getUserMedia()](https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia)
+ [MDN: MediaDevices.getUserMedia()](https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia)
 
 ---
 
-## 📳 Vibration API
+##  Vibration API
 
 Trigger device vibrations (mobile only).
 
@@ -172,11 +172,11 @@ Trigger device vibrations (mobile only).
 navigator.vibrate([200, 100, 200]); // Vibrate -> pause -> vibrate
 ```
 
-📚 [MDN: Vibration API](https://developer.mozilla.org/en-US/docs/Web/API/Vibration_API)
+ [MDN: Vibration API](https://developer.mozilla.org/en-US/docs/Web/API/Vibration_API)
 
 ---
 
-## ⚡ Device Memory & CPU
+##  Device Memory & CPU
 
 Estimate device memory and logical CPU cores.
 
@@ -185,11 +185,11 @@ console.log("Memory:", navigator.deviceMemory, "GB");
 console.log("Cores:", navigator.hardwareConcurrency);
 ```
 
-📚 [MDN: Navigator.deviceMemory](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/deviceMemory)
+ [MDN: Navigator.deviceMemory](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/deviceMemory)
 
 ---
 
-## 📱 Device Orientation & Motion
+##  Device Orientation & Motion
 
 Listen to accelerometer & gyroscope events.
 
@@ -203,11 +203,11 @@ window.addEventListener("devicemotion", e => {
 });
 ```
 
-📚 [MDN: DeviceOrientation API](https://developer.mozilla.org/en-US/docs/Web/API/Device_orientation_events)
+ [MDN: DeviceOrientation API](https://developer.mozilla.org/en-US/docs/Web/API/Device_orientation_events)
 
 ---
 
-## 🛠 Service Worker / PWA
+##  Service Worker / PWA
 
 Check service worker availability.
 
@@ -219,11 +219,11 @@ if ("serviceWorker" in navigator) {
 }
 ```
 
-📚 [MDN: Service Workers](https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API)
+ [MDN: Service Workers](https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API)
 
 ---
 
-## 📚 References
+##  References
 
 * [MDN Web API Reference](https://developer.mozilla.org/en-US/docs/Web/API)
 * [Navigator API](https://developer.mozilla.org/en-US/docs/Web/API/Navigator)

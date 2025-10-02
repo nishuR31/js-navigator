@@ -41,7 +41,7 @@
       }).showToast();
     }
 
-    function showInfo(title, data, bgColor = "linear-gradient(to right, #D3D3D3, #708090)") {
+    function showInfo(title, data, bgColor = "linear-gradient(to right, #333333, #708090)") {
       const formatted = typeof data === "object" ? JSON.stringify(data, null, 2) : data;
       showToast(`${title}: ${formatted}`, bgColor);
     }

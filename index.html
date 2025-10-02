@@ -6,16 +6,20 @@
   <title>Navigator API Playground</title>
 
   <!-- Tailwind CSS -->
-<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<!-- <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script> -->
+<script src="https://cdn.tailwindcss.com"></script>
 
   <!-- Sonner Toast -->
-  <script type="module">
-    import { Toaster, toast } from "https://esm.sh/sonner@1.5.0";
-    window.toast = toast;
-    document.addEventListener("DOMContentLoaded", () => {
-      new Toaster().render();
-    });
-  </script>
+<script src="https://cdn.jsdelivr.net/npm/sonner@1.5.0/dist/sonner.min.js"></script>
+<script>
+  const { Toaster, toast } = window.sonner;
+  window.toast = toast;
+
+  document.addEventListener("DOMContentLoaded", () => {
+    new Toaster({ target: document.body });
+  });
+</script>
+
 
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>

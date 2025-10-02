@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Navigator API Playground</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Sonner Toast -->
+  <script type="module">
+    import { Toaster, toast } from "https://esm.sh/sonner@1.5.0";
+    window.toast = toast;
+    document.addEventListener("DOMContentLoaded", () => {
+      new Toaster().render();
+    });
+  </script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-gray-900 text-gray-100 min-h-screen flex flex-col items-center p-6">
+
+  <h1 class="text-4xl font-bold mb-6 animate-bounce">Navigator API Playground</h1>
+
+  <div id="cards" class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 w-full max-w-7xl"></div>
+
+  <video id="cameraFeed" autoplay playsinline class="hidden mt-6 rounded shadow-lg border"></video>
+
+  <script>
+    function showInfo(title, data) {
+      const formatted = typeof data === "object" ? JSON.stringify(data, null, 2) : data;
+      toast.info(`${title}: ${formatted}`);
+    }
+
+    const demos = [
+      {
+        title: "Online / Offline",
+        icon: "wifi",
+        run: () => {
+          const status = navigator.onLine ? "Online" : "Offline";
+          showInfo("Network Status", status);
+        }
+      },
+      {
+        title: "Geolocation",
+        icon: "map-pin",
+        run: () => {
+          if ("geolocation" in navigator) {
+            navigator.geolocation.getCurrentPosition(
+              pos => {
+                const coords = pos.coords;
+                const msg = `Latitude: ${coords.latitude}, Longitude: ${coords.longitude}, Accuracy: ${coords.accuracy}m`;
+                toast.success(msg);
+                showInfo("Geolocation Data", coords);
+              },
+              err => toast.error(`Geolocation error (${err.code}): ${err.message}`),
+              { enableHighAccuracy: true, timeout: 10000, maximumAge: 5000 }
+            );
+          } else toast.error("Geolocation not supported");
+        }
+      },
+      {
+        title: "Notifications",
+        icon: "bell",
+        run: async () => {
+          if (!("Notification" in window)) return toast.error("Notifications not supported");
+          const permission = await Notification.requestPermission();
+          if (permission === "granted") {
+            new Notification("Navigator API", {
+              body: "This is a detailed Notification API example.",
+              icon: "https://img.icons8.com/color/48/000000/notification.png"
+            });
+            toast.success("Notification sent");
+            showInfo("Notification Permission", permission);
+          } else toast.error("Permission denied");
+        }
+      },
+      {
+        title: "Clipboard",
+        icon: "clipboard",
+        run: async () => {
+          try {
+            const text = "Navigator API Example Text";
+            await navigator.clipboard.writeText(text);
+            toast.success("Text copied to clipboard");
+            const clipText = await navigator.clipboard.readText();
+            showInfo("Clipboard Content", clipText);
+          } catch (err) {
+            toast.error("Clipboard API error: " + err.message);
+          }
+        }
+      },
+      {
+        title: "Share",
+        icon: "share",
+        run: async () => {
+          if (!navigator.share) return toast.error("Share API not supported");
+          try {
+            await navigator.share({
+              title: "Navigator API Playground",
+              text: "Check this amazing API playground",
+              url: window.location.href
+            });
+            toast.success("Shared successfully");
+            showInfo("Share API", "Content shared successfully");
+          } catch (err) {
+            toast.error("Share failed: " + err.message);
+          }
+        }
+      },
+      {
+        title: "Device Info",
+        icon: "monitor",
+        run: () => {
+          const info = {
+            "User Agent": navigator.userAgent,
+            Platform: navigator.platform,
+            Language: navigator.language,
+            Languages: navigator.languages,
+            CookiesEnabled: navigator.cookieEnabled,
+            DoNotTrack: navigator.doNotTrack
+          };
+          showInfo("Device Info", info);
+        }
+      },
+      {
+        title: "Battery",
+        icon: "battery",
+        run: async () => {
+          if (!("getBattery" in navigator)) return toast.error("Battery API not supported");
+          try {
+            const battery = await navigator.getBattery();
+            const msg = `Battery: ${(battery.level * 100).toFixed(0)}% | Charging: ${battery.charging}`;
+            toast.success(msg);
+            showInfo("Battery Info", battery);
+          } catch (err) {
+            toast.error("Battery API error: " + err.message);
+          }
+        }
+      },
+      {
+        title: "Camera / Mic",
+        icon: "camera",
+        run: async () => {
+          if (!navigator.mediaDevices?.getUserMedia) return toast.error("Media Devices API not supported");
+          try {
+            const stream = await navigator.mediaDevices.getUserMedia({
+              video: { width: 1280, height: 720 },
+              audio: false
+            });
+            const videoElement = document.getElementById("cameraFeed");
+            videoElement.srcObject = stream;
+            videoElement.classList.remove("hidden");
+            toast.success("Camera access granted");
+            showInfo("Media Stream", { video: stream.getVideoTracks()[0].label });
+          } catch (err) {
+            toast.error("Camera error: " + err.message);
+          }
+        }
+      },
+      {
+        title: "Vibration",
+        icon: "smartphone",
+        run: () => {
+          if (!navigator.vibrate) return toast.error("Vibration API not supported");
+          navigator.vibrate([300, 100, 300]);
+          toast.success("Vibration triggered");
+          showInfo("Vibration Pattern", "[300, 100, 300]");
+        }
+      },
+      {
+        title: "Memory / CPU",
+        icon: "cpu",
+        run: () => {
+          const info = {
+            Memory: navigator.deviceMemory || "Unknown",
+            Cores: navigator.hardwareConcurrency || "Unknown"
+          };
+          showInfo("System Info", info);
+        }
+      },
+      {
+        title: "Orientation",
+        icon: "compass",
+        run: () => {
+          if (!("DeviceOrientationEvent" in window)) return toast.error("Device Orientation API not supported");
+          toast.info("Listening to device orientation...");
+          const handler = e => {
+            showInfo("Orientation Data", {
+              Alpha: e.alpha?.toFixed(2),
+              Beta: e.beta?.toFixed(2),
+              Gamma: e.gamma?.toFixed(2)
+            });
+            window.removeEventListener("deviceorientation", handler);
+          };
+          window.addEventListener("deviceorientation", handler);
+        }
+      },
+      {
+        title: "Service Worker",
+        icon: "server",
+        run: () => {
+          if ("serviceWorker" in navigator) {
+            navigator.serviceWorker.register("/sw.js")
+              .then(reg => toast.success(`Service Worker registered: ${reg.scope}`))
+              .catch(err => toast.error("Service Worker error: " + err.message));
+            showInfo("Service Worker", "Attempted registration");
+          } else toast.error("Service Worker not supported");
+        }
+      }
+    ];
+
+    const container = document.getElementById("cards");
+    demos.forEach(demo => {
+      const card = document.createElement("div");
+      card.className = "bg-gray-800 p-5 rounded-xl shadow-lg flex flex-col items-center text-center transition hover:scale-105";
+      card.innerHTML = `
+        <i data-lucide="${demo.icon}" class="w-10 h-10 mb-3"></i>
+        <h2 class="font-bold text-lg mb-3">${demo.title}</h2>
+        <button class="px-6 py-2 bg-blue-600 hover:bg-blue-700 rounded font-medium">Try</button>
+      `;
+      card.querySelector("button").onclick = demo.run;
+      container.appendChild(card);
+    });
+
+    lucide.createIcons();
+  </script>
+</body>
+</html>
